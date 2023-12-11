@@ -1,0 +1,26 @@
+digraph
+{
+rankdir = TB;
+node[shape = record, color = "#000000", fontname = "Sans Bold Not-Rotated", fontsize = 20];
+bgcolor = "#5e67d4";
+TREE[rank = "min", style = "filled", fillcolor = "#007be9", label = "{Tree|Error: 0|Size: 10|<root>Root}"];
+NODE_13[style = "filled", fillcolor = "#faa116", label = "{*/ 13}"];
+NODE_11[style = "filled", fillcolor = "#faa116", label = "{^/ 11}"];
+NODE_10[style = "filled", fillcolor = "#faa116", label = "{x/ 10}"];
+NODE_9[style = "filled", fillcolor = "#faa116", label = "{-/ 9}"];
+NODE_8[style = "filled", fillcolor = "#faa116", label = "{300/ 8}"];
+NODE_7[style = "filled", fillcolor = "#faa116", label = "{1/ 7}"];
+NODE_9[style = "filled", fillcolor = "#faa116", label = "{-/ 9}"];
+NODE_8[style = "filled", fillcolor = "#faa116", label = "{300/ 8}"];
+NODE_7[style = "filled", fillcolor = "#faa116", label = "{1/ 7}"];
+NODE_13:left->NODE_11;
+NODE_13:right->NODE_9;
+NODE_11:left->NODE_10;
+NODE_11:right->NODE_9;
+NODE_9:left->NODE_8;
+NODE_9:right->NODE_7;
+NODE_9:left->NODE_8;
+NODE_9:right->NODE_7;
+
+TREE:root->NODE_13
+}
