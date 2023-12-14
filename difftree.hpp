@@ -18,8 +18,11 @@ const size_t CMD_MAX_LEN = 256;
 
 enum difCommands
     {
+    OP_BR = -2,
+    CL_BR = -1,
+    HLT = 0,
     ADD = 1,
-    SUB,
+    SUB = 2,
     MUL,
     DIV,
     POW,
@@ -36,7 +39,7 @@ enum difCommands
 
 enum difType
     {
-    CONST,
+    CONST = 1,
     VAR,
     COMMAND,
     };
@@ -86,6 +89,7 @@ char* getCmdName(difCommands cmd);
 
 error_t RecountNodes(DiffTree* tree);
 error_t NodeDestruct(DiffNode* node);
+error_t DiffChangeNode(DiffNode* node, DiffNode* left, DiffNode* right);
 
 DiffNode* DiffCopyNode(DiffNode* node);
 

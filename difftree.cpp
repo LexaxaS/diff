@@ -338,6 +338,19 @@ char* getCmdName(difCommands cmd)
         }
     }
 
+error_t DiffChangeNode(DiffNode* node, DiffNode* left, DiffNode* right)
+    {
+    node->left = left;
+    if (left)
+        left->parent = node;
+        
+    node->right = right;
+    if (right)
+        right->parent = node;
+    
+    return NO_ERROR;
+    }
+
 DiffNode* DiffCopyNode(DiffNode* node)
     {
     if (!node)

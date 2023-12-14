@@ -99,7 +99,7 @@ error_t DiffOptimise(DiffTree* tree)
     while (ischange)
         ischange = _recDiffOptimise(tree->root);
     
-    return NO_ERROR;
+    return RecountNodes(tree);
     }
 
 size_t _recDiffOptimise(DiffNode* node)

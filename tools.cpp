@@ -149,7 +149,7 @@ String* setPtr(char* buf, size_t nLines, size_t flen)
     }
 
 size_t countLines(const char* str)
-{
+    {
     size_t nlines = 1;
     const char* terPtr = strchr(str, '\n');
     while (terPtr != NULL)
@@ -159,8 +159,8 @@ size_t countLines(const char* str)
         terPtr = strchr(terPtr + 1, '\n');
         }
     return nlines;
-}
-
+    }
+ 
 void printBuf(String* pointers)
     {
     assert(pointers);
