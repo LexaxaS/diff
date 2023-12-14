@@ -214,17 +214,25 @@ bool _OptMulDiv(DiffNode* node)
             node->value = node->right->value;
             node->subtreeLen = node->right->subtreeLen;
             
-            NodeDestruct(node->left);
             DiffNode* oldrn = node->right;
+            DiffNode* oldln = node->left;
 
-            node->left = node->right->left;
-            if (node->right->left)
-                node->right->left->parent = node;
+            node->right = nullptr;
+            node->left = nullptr;
 
-            node->right = node->right->right;
-            if (node->right->right)
-                node->right->right->parent = node;
+            if (oldrn->left)
+                {
+                node->left = oldrn->left;
+                node->left->parent = node;
+                }
+            
+            if (oldrn->right)
+                {
+                node->right = oldrn->right;
+                node->right->parent = node;
+                }
 
+            NodeDestruct(oldln);
             free(oldrn);
             return true;
             }
@@ -235,18 +243,25 @@ bool _OptMulDiv(DiffNode* node)
             node->value = node->left->value;
             node->subtreeLen = node->left->subtreeLen;
 
-            NodeDestruct(node->right);
+            DiffNode* oldrn = node->right;
             DiffNode* oldln = node->left;
-
-            node->right = node->left->right;
-            if (node->left->right)
-                node->left->right->parent = node;
-
-            node->left = node->left->left;
-            if (node->left->left)
-                node->left->left->parent = node;
-
             
+            node->right = nullptr;
+            node->left = nullptr;
+
+            if (oldln->right)
+                {
+                node->right = oldln->right;
+                node->right->parent = node;
+                }
+
+            if (oldln->left)
+                {
+                node->left = oldln->left;
+                node->left->parent = node;
+                }
+            
+            NodeDestruct(oldrn);
             free(oldln);
             return true;
             }
@@ -327,8 +342,27 @@ DiffNode* diffDiv(DiffNode* node, FILE* filedest)
     return newNode;
     }
 
+DiffNode* difPowVarUp(DiffNode* node, FILE* filedest)
+    {
+    DiffNode* newNode = MUL(MUL(POW(copyL, copyR), LN(copyL)), difR);
+    return newNode;
+    }
+
+DiffNode* difPowVarUpDown(DiffNode* node, FILE* filedest)
+    {
+    DiffNode* newNode = MUL(POW(copyL, copyR), ADD(MUL(LN(copyL), difR), MUL(copyR, DIV(difL, copyL))));
+    return newNode;
+    }
+
 DiffNode* diffPow(DiffNode* node, FILE* filedest)
     {
+    if (IsVarInSubtree(node->right))
+        {
+        if (IsVarInSubtree(node->left))
+            return difPowVarUpDown(node, filedest);
+        return difPowVarUp(node, filedest);
+        }
+
     DiffNode* newNode = MUL(MUL(POW(copyL, SUB(copyR, CNST(1))), copyR), difL);
     return newNode;
     }

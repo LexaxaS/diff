@@ -98,6 +98,7 @@ bool areEqual(double a, double b);
 Text setbuf(char filename_i[]);
 String* setPtr(char* buf, size_t nLines, size_t flen);
 String* splitBuf(Text* text, char terminator);
+const char* FileToBuf(char* filename);
 
 void printBuf(String* pointers);
 void bufReturn(char* buf, size_t flen);

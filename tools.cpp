@@ -45,6 +45,18 @@ Text setbuf(char filename_i[])
     return text;
     }  
 
+const char* FileToBuf(char* filename)
+    {
+    FILE* file = fileopenerR(filename);
+    size_t size = fileLen(filename);
+    char* buf = (char*) calloc(size + 1, sizeof(char));
+    buf[size] = '\0';
+    fread(buf, sizeof(char), size, file);
+    fclose(file);
+
+    return buf;
+    }
+
 
 String* splitBuf(Text* text, char terminator)
     {

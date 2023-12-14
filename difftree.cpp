@@ -333,6 +333,12 @@ char* getCmdName(difCommands cmd)
         case ARCCTG:
             return "arcctg";
 
+        case OP_BR:
+            return "(";
+        
+        case CL_BR:
+            return ")";
+
         default:
             return "UNKNOWN";
         }
@@ -388,11 +394,11 @@ DiffNode* DiffCopyNode(DiffNode* node)
 
     printf("cmd = %s, var = %c", getCmdName(newNode->value.cmd), newNode->value.var);
 
-    DiffTree tree = {};
-    size_t s = 10;
-    tree.root = node;
-    tree.size = &s;
-    TreeGraphicDump(&tree);
+    // DiffTree tree = {};
+    // size_t s = 10;
+    // tree.root = node;
+    // tree.size = &s;
+    // TreeGraphicDump(&tree);
     
     return newNode;
     }
@@ -416,15 +422,32 @@ DiffNodewErr DiffCreateNode(DiffElem_t value, difType type, DiffNode* leftnode, 
     node->value = value;
     node->type = type;
 
-    DiffTree tree = {};
-    size_t s = 10;
-    tree.root = node;
-    tree.size = &s;
-    TreeGraphicDump(&tree);
+    // DiffTree tree = {};
+    // size_t s = 10;
+    // tree.root = node;
+    // tree.size = &s;
+    // TreeGraphicDump(&tree);
 
     return {node, NO_ERROR};
     }
 
+bool IsVarInSubtree(DiffNode* node)
+    {
+    if (!node)
+        return false;
+
+    if (node->type == VAR)
+        return true;
+    
+    if (IsVarInSubtree(node->left))
+        return true;
+
+    if (IsVarInSubtree(node->right))
+        return true;
+
+    return false;
+    }
+    
 static error_t _recRecountNotes(DiffNode* node)
     {
     MY_ASSERT_SOFT(node, ERR_NULL_PTR);

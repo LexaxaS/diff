@@ -87,6 +87,8 @@ DiffNodewErr DiffCreateCnstNode(double cnst, DiffNode* left, DiffNode* right);
 
 char* getCmdName(difCommands cmd);
 
+bool IsVarInSubtree(DiffNode* node);
+
 error_t RecountNodes(DiffTree* tree);
 error_t NodeDestruct(DiffNode* node);
 error_t DiffChangeNode(DiffNode* node, DiffNode* left, DiffNode* right);

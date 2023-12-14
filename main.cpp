@@ -16,7 +16,7 @@ int main()
     // TreeGraphicDump(&tree);
 
     DiffTree tree3 = {};
-    const char string[] = "1000-x";
+    const char* string = FileToBuf("data.txt");
     DiffNode* root3 = GetG(string);
     tree3.root = root3;
     RecountNodes(&tree3);

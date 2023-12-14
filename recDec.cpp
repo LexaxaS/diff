@@ -25,17 +25,19 @@ DiffNode* GetN(const char* string, size_t* pos);
 DiffNode* GetE(DiffNode** tokens, size_t* pos);
 DiffNode* GetT(DiffNode** tokens, size_t* pos);
 DiffNode* GetP(DiffNode** tokens, size_t* pos);
+DiffNode* GetName(DiffNode** tokens, size_t* pos);
+
 
 DiffNode** DiffTokenator(const char* string)
     {
     size_t lenstr = strlen(string);
-    DiffNode** tokens = (DiffNode**) calloc(lenstr, sizeof(DiffNode*));
+    DiffNode** tokens = (DiffNode**) calloc(lenstr + 1, sizeof(DiffNode*));
     size_t pos = 0;
     size_t tknpos = 0;
 
     while (true)
         {
-        printf("%c\n", string[pos]);
+        printf("[%c]\n", string[pos]);
         
         if (string[pos] == '\0')
             {
@@ -53,9 +55,6 @@ DiffNode** DiffTokenator(const char* string)
             tokens[tknpos++] = _DiffElemParse(string + pos, &pos);
         }
 
-    for (size_t i = 0; i < 3; i++)
-        printf("type = %d / val = %d\n", tokens[i]->type, tokens[i]->value.cmd);
-        
     return tokens;
     }
 
@@ -103,55 +102,55 @@ static DiffNode* _DiffElemParse(const char* string, size_t* pos)
         return CreateCmdNode(CL_BR);
         }
 
-    else if (strcasecmp(string, "sin") == 0)
+    else if (strncasecmp(string, "sin", 3) == 0)
         {
         *pos += 3;
         return CreateCmdNode(SIN);
         }
 
-    else if (strcasecmp(string, "cos") == 0)
+    else if (strncasecmp(string, "cos", 3) == 0)
         {
         *pos += 3;
         return CreateCmdNode(COS);
         }
 
-    else if (strcasecmp(string, "tg") == 0)
+    else if (strncasecmp(string, "tg", 2) == 0)
         {
         *pos += 2;
         return CreateCmdNode(TG);
         }
 
-    else if (strcasecmp(string, "ctg") == 0)
+    else if (strncasecmp(string, "ctg", 3) == 0)
         {
         *pos += 3;
         return CreateCmdNode(CTG);
         }
 
-    else if (strcasecmp(string, "ln") == 0)
+    else if (strncasecmp(string, "ln", 2) == 0)
         {
         *pos += 2;
         return CreateCmdNode(LN);
         }
 
-    else if (strcasecmp(string, "arcsin") == 0)
+    else if (strncasecmp(string, "arcsin", 6) == 0)
         {
         *pos += 6;
         return CreateCmdNode(ARCSIN);
         }
 
-    else if (strcasecmp(string, "arccos") == 0)
+    else if (strncasecmp(string, "arccos", 6) == 0)
         {
         *pos += 6;
         return CreateCmdNode(ARCCOS);
         }
 
-    else if (strcasecmp(string, "arctg") == 0)
+    else if (strncasecmp(string, "arctg", 5) == 0)
         {
         *pos += 5;
         return CreateCmdNode(ARCTG);
         }
 
-    else if (strcasecmp(string, "arcctg") == 0)
+    else if (strncasecmp(string, "arcctg", 6) == 0)
         {
         *pos += 6;
         return CreateCmdNode(ARCCTG);
@@ -175,12 +174,10 @@ DiffNode* GetN(const char* string, size_t* pos)
 
     while ('0' <= string[*pos] && string[*pos] <= '9')
         {
-        printf("c = %c\n", string[*pos]);
         val = val * 10 + string[*pos] - '0';
         (*pos)++;
         }
         
-    printf("val = %lg\n", val);
     return DiffCreateCnstNode(val, nullptr, nullptr).node;
     }
 
@@ -229,6 +226,33 @@ DiffNode* GetT(DiffNode** tokens, size_t* pos)
     return node1;
     }
 
+DiffNode* GetName(DiffNode** tokens, size_t* pos)
+    {
+    if (tokens[*pos]->type == COMMAND && tokens[*pos]->value.cmd >= SIN)
+        {
+        difCommands op = tokens[*pos]->value.cmd;
+        (*pos)++;
+        if (tokens[*pos]->type == COMMAND && tokens[*pos]->value.cmd == OP_BR)
+            {
+            (*pos)++;
+            DiffNode* node = GetE(tokens, pos);
+            node = DiffCreateCmdNode(op, nullptr, node).node;
+            if (tokens[*pos]->type == COMMAND && tokens[*pos]->value.cmd == CL_BR)
+                {
+                (*pos)++;
+                return node;
+                }
+
+            printf("noclbr %d\n", tokens[*pos]->type);
+            return nullptr;
+            }
+
+        printf("noopbr\n");
+        return nullptr;
+        }
+    return nullptr;
+    }
+
 DiffNode* GetP(DiffNode** tokens, size_t* pos)
     {
     if (tokens[*pos]->type == COMMAND && tokens[*pos]->value.cmd == OP_BR)
@@ -255,7 +279,8 @@ DiffNode* GetP(DiffNode** tokens, size_t* pos)
         (*pos)++;
         return tokens[*pos - 1];        
         }
+
     else 
-        return nullptr;
+        return GetName(tokens, pos);
     }
 
